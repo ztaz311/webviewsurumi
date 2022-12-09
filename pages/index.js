@@ -156,7 +156,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 id="header">Waiting get info user</h1>
+        <h1 id="header">Waiting get info user...</h1>
       </main>
 
     </div>
