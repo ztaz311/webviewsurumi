@@ -2,8 +2,10 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import React, { useEffect } from 'react'
-
+import axios from 'axios'
 export default function Home() {
+  const memberId = 'member001';
+
   class ChannelService {
     constructor() {
       this.loadScript();
@@ -78,6 +80,56 @@ export default function Home() {
   }
 
   useEffect(() => {
+    async function getDetailChatBot() {
+      try {
+        const myDataUser = await axios({
+          method: 'GET',
+          url: `https://api.channel.io/open/v5/users/@${memberId}`,
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-Access-Key': '638024635c899333cde9',
+            'X-Access-Secret': '7006056e109b1070231e2c5544159239',
+          },
+        });
+        const idUser = await myDataUser;
+        console.log('idUser', idUser.data.user.id);
+        if (idUser) {
+          const responseDataUserChat = await axios({
+            method: 'GET',
+            url: `https://api.channel.io/open/v5/users/${idUser.data.user.id}/user-chats`,
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              'X-Access-Key': '638024635c899333cde9',
+              'X-Access-Secret': '7006056e109b1070231e2c5544159239',
+            },
+          });
+          console.log(
+            'responseDataUserChat',
+            JSON.stringify(responseDataUserChat.data.messages),
+          );
+          if (responseDataUserChat.data.messages.length > 0) {
+            console.log('data', responseDataUserChat.data.messages[0].chatId);
+            // setUrl(
+            //   `https://ljywn.channel.io/user-chats/${responseDataUserChat.data.messages[0].chatId}?mode=newTab&translate=true`,
+            // );
+            // location.replace(`https://ljywn.channel.io/user-chats/${idUserChat[0].id}?mode=newTab&translate=true`)
+            // document.getElementsByTagName("svg")[0].setAttribute('display', 'none')
+          }
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
+    setTimeout(() => {
+      getDetailChatBot();
+    }, 100);
+
+
+
+
+    // 
     const channelService = new ChannelService();
     channelService.boot({
       "pluginKey": "d45e05be-644b-452e-bd07-e051299d51bd",
